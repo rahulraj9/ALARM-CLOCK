@@ -102,4 +102,15 @@ body {
   .alarm-button-de-active{
     background-color: #0056b3;
   }
+  .alarm-button-edit {
+    padding: 5px 10px;
+    background-color: #ffc107;
+    color: #333;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
   
+  .alarm-button-edit:hover {
+    background-color: #e0a800;
+  }

@@ -42,14 +42,17 @@ function addAlarm(hour, minute) {
     <div class="alarm-actions">
       <button class="alarm-button start-button">Start</button>
       <button class="alarm-button stop-button">Stop</button>
+      <button class="alarm-button-edit">Edit</button>
     </div>
   `;
 
-  // Add event listeners to the start and stop buttons
+  // Add event listeners to the start, stop, and edit buttons
   const startButton = alarmItem.querySelector(".start-button");
   const stopButton = alarmItem.querySelector(".stop-button");
+  const editButton = alarmItem.querySelector(".alarm-button-edit");
   startButton.addEventListener("click", () => startAlarm(alarmTime));
   stopButton.addEventListener("click", () => stopAlarm(alarmTime));
+  editButton.addEventListener("click", () => editAlarm(alarmTime));
 
   // Append the alarm item to the alarm list
   alarmListElement.appendChild(alarmItem);
@@ -62,44 +65,73 @@ function addAlarm(hour, minute) {
 function startAlarm(alarmTime) {
   const alarm = alarms.find((alarm) => alarm.time === alarmTime);
   alarm.item.classList.add("active");
-  window.alert(`Alarm set ${alarmTime}`)
+  window.alert(`Alarm set at ${alarmTime}`)
+  // Trigger the alarm sound
+  const alarmSound = document.getElementById("alarm-sound");
+  alarmSound.play();
+
+  // Change the color of the start button to green
   const startButton = alarm.item.querySelector(".start-button");
-  startButton.classList.add("alarm-button-active");
-  console.log("hello")
-  // Check if the alarm is not already running
-  if (alarm.intervalId === null) {
-    console.log("at here")
-    const checkAlarm = setInterval(() => {
-      const now = new Date();
-      const currentHour = now.getHours();
-      const currentMinute = now.getMinutes();
-      const currentAlarmTime = `${formatTime(currentHour)}:${formatTime(currentMinute)}`;
-      if (currentAlarmTime === alarmTime) {
-        // Trigger the alarm sound
-        const alarmSound = document.getElementById("alarm-sound");
-        alarmSound.play();
-      }
-    }, 1000);
-  
-    // Save the interval ID to stop the alarm later
-    alarm.intervalId = checkAlarm;
-  }
+  startButton.classList.add("btn-success");
+  startButton.classList.remove("btn-primary");
+
+  // Disable the start button
+  startButton.disabled = true;
+
+  // Enable the stop button
+  const stopButton = alarm.item.querySelector(".stop-button");
+  stopButton.disabled = false;
+
+  // Disable the edit button
+  const editButton = alarm.item.querySelector(".alarm-button-edit");
+  editButton.disabled = true;
 }
 
 // Function to stop an alarm
 function stopAlarm(alarmTime) {
   const alarm = alarms.find((alarm) => alarm.time === alarmTime);
   alarm.item.classList.remove("active");
-  const startButton = alarm.item.querySelector(".start-button");
-  startButton.classList.remove("alarm-button-active");
+
   // Pause the alarm sound
   const alarmSound = document.getElementById("alarm-sound");
   alarmSound.pause();
   alarmSound.currentTime = 0;
 
-  // Clear the interval to stop checking the alarm time
-  clearInterval(alarm.intervalId);
-  alarm.intervalId = null;
+  // Change the color of the start button back to blue
+  const startButton = alarm.item.querySelector(".start-button");
+  startButton.classList.remove("btn-success");
+  startButton.classList.add("btn-primary");
+
+  // Enable the start button
+  startButton.disabled = false;
+
+  // Disable the stop button
+  const stopButton = alarm.item.querySelector(".stop-button");
+  stopButton.disabled = true;
+
+  // Enable the edit button
+  const editButton = alarm.item.querySelector(".alarm-button-edit");
+  editButton.disabled = false;
+}
+
+// Function to edit an alarm
+function editAlarm(alarmTime) {
+  const alarm = alarms.find((alarm) => alarm.time === alarmTime);
+  const hourInput = document.getElementById("hour");
+  const minuteInput = document.getElementById("minute");
+
+  // Extract hour and minute from alarm time
+  const [hour, minute] = alarmTime.split(":").map((timePart) => parseInt(timePart));
+
+  // Set the input fields with the alarm time for editing
+  hourInput.value = hour;
+  minuteInput.value = minute;
+
+  // Remove the alarm from the list
+  alarmListElement.removeChild(alarm.item);
+
+  // Filter out the alarm from the alarms array
+  alarms = alarms.filter((a) => a.time !== alarmTime);
 }
 
 // Function to check for triggered alarms
