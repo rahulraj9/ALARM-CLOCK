@@ -1,6 +1,6 @@
 # Alarm Clock
 
-![Alarm Clock](link_to_image)
+![Alarm Clock](https://e7.pngegg.com/pngimages/805/907/png-clipart-alarm-clocks-cartoon-alarm-clock-digital-clock-alarm.png)
 
 # Table of Contents
 - Introduction
